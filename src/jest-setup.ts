@@ -1,5 +1,5 @@
 // This file configures the MSW server for all test runs.
-import { server } from './mocks/server';
+import { server } from './__mocks__/server.mock';
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());

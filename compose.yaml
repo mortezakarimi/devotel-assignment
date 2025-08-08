@@ -1,0 +1,70 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker compose reference guide at
+# https://docs.docker.com/compose/compose-file/
+volumes:
+  db-data:
+  redis-data:
+
+networks:
+  default:
+    internal: false
+  database:
+    driver: bridge
+    internal: true
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services:
+  database:
+    image: postgres:${DATABASE_VERSION}-alpine
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DATABASE_DATABASE:-db_name}
+      POSTGRES_USER: ${DATABASE_USERNAME:-db_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-!ChangeMe!}
+    expose:
+      - 5432
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'pg_isready',
+          '--username=${DATABASE_USERNAME}',
+          '--dbname=${DATABASE_DATABASE}',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - database
+
+  server:
+    build:
+      context: .
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT}
+    ports:
+      - '${PORT:-4000}:${PORT:-4000}'
+    networks:
+      - database
+      - default
+    depends_on:
+      database:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G

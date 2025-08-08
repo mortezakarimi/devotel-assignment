@@ -18,15 +18,31 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/database/typeorm.config.ts",
+    "migration:run": "npm run typeorm migration:run -- --transaction each",
+    "schema:drop": "npm run typeorm schema:drop",
+    "migration:generate": "npm run typeorm -- migration:generate migrations/$npm_config_name",
+    "migration:create": "typeorm-ts-node-commonjs migration:create migrations/$npm_config_name",
+    "migration:revert": "npm run typeorm -- migration:revert"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.6",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/swagger": "^11.2.0",
+    "@nestjs/typeorm": "^11.0.0",
+    "axios": "^1.11.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "luxon": "^3.7.1",
+    "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "typeorm": "^0.3.25",
+    "typeorm-naming-strategies": "^4.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
@@ -37,6 +53,7 @@
     "@nestjs/testing": "^11.1.6",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
+    "@types/luxon": "^3.7.1",
     "@types/node": "^24.2.0",
     "@types/supertest": "^6.0.3",
     "eslint": "^9.32.0",
@@ -48,6 +65,7 @@
     "msw": "^2.10.4",
     "prettier": "^3.6.2",
     "source-map-support": "^0.5.21",
+    "sqlite3": "^5.1.7",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.1",
     "ts-loader": "^9.5.2",
@@ -55,5 +73,8 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0"
+  },
+  "config": {
+    "name": ""
   }
 }

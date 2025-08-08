@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { faker } from '@faker-js/faker';
-
+faker.seed(123);
 /**
  * Creates a mock job object following the structure of Provider 1's API.
  */
@@ -79,6 +79,23 @@ export const handlers = [
     return HttpResponse.json({
       status: 'success',
       data: { jobsList },
+    });
+  }),
+
+  http.get('https://assignment.devotel.io/api/provider1/jobs-error', () => {
+    return HttpResponse.json(
+      { message: 'Internal Server Error' },
+      { status: 500, statusText: 'Server blew up' },
+    );
+  }),
+
+  http.get('https://assignment.devotel.io/api/provider1/jobs-empty', () => {
+    return HttpResponse.json({
+      metadata: {
+        requestId: `req-${faker.string.alphanumeric(10)}`,
+        timestamp: new Date().toISOString(),
+      },
+      jobs: [], // Return an empty array
     });
   }),
 ];
