@@ -155,7 +155,9 @@ describe('Provider2Service', () => {
     });
 
     it('should throw an error when salary min is greater than max', () => {
-      const invalidSalaryJob = JSON.parse(JSON.stringify(mockProvider2JobData));
+      const invalidSalaryJob: JobsList = JSON.parse(
+        JSON.stringify(mockProvider2JobData),
+      );
       invalidSalaryJob['job-297'].compensation = {
         min: 100000,
         max: 90000,

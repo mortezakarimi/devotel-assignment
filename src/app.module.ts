@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { JobsModule } from './modules/jobs/jobs.module';
-import { CompaniesModule } from './modules/companies/companies.module';
-import { SkillsModule } from './modules/skills/skills.module';
 import { ProvidersModule } from './providers/providers.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from './env.validation';
 import { DatabaseModule } from './database/database.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import databaseConfig from './database/typeorm.config';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SchedulerModule } from './modules/scheduler/scheduler.module';
+import { SettingsModule } from '@/modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -28,11 +29,12 @@ import databaseConfig from './database/typeorm.config';
       ): Promise<TypeOrmModuleOptions> =>
         configService.get<TypeOrmModuleOptions>('database')!,
     }),
-    JobsModule,
-    CompaniesModule,
-    SkillsModule,
-    ProvidersModule,
+    ScheduleModule.forRoot(),
     DatabaseModule,
+    ProvidersModule,
+    SettingsModule,
+    JobsModule,
+    SchedulerModule,
   ],
   controllers: [],
   providers: [],

@@ -4,9 +4,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
+import { DatabaseExceptionFilter } from '@/common/filters/database-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.setGlobalPrefix('api', {
+    exclude: ['health-check'],
+  });
+  app.useGlobalFilters(new DatabaseExceptionFilter());
   const configService = app.get(ConfigService);
   const config = new DocumentBuilder()
     .setTitle('Devotel Assignment')
@@ -16,7 +21,8 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
-
+  // Starts listening for shutdown hooks
+  app.enableShutdownHooks();
   await app.listen(configService.get('PORT') ?? 3000);
   const logger = new Logger('bootstrap');
   logger.log(`Listening on ${await app.getUrl()}`);

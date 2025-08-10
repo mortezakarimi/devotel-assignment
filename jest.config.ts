@@ -17,10 +17,12 @@ const config: Config = {
     '<rootDir>/main.ts',
     '<rootDir>/env.validation.ts',
     '\\.mock\\.ts',
+    '\\.constant\\.ts',
   ],
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
+  coverageReporters: ['json', 'html'],
   // This line is crucial for setting up MSW before tests run
   setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
   moduleNameMapper: {

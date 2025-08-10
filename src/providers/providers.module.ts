@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { Provider1Service } from './provider1/provider1.service';
 import { Provider2Service } from './provider2/provider2.service';
 import { HttpModule } from '@nestjs/axios';
+import { ProvidersService } from './providers.service';
 
 @Module({
   imports: [
@@ -10,7 +11,7 @@ import { HttpModule } from '@nestjs/axios';
       maxRedirects: 1,
     }),
   ],
-  providers: [Provider1Service, Provider2Service],
-  exports: [Provider1Service, Provider2Service],
+  providers: [Provider1Service, Provider2Service, ProvidersService],
+  exports: [ProvidersService],
 })
 export class ProvidersModule {}

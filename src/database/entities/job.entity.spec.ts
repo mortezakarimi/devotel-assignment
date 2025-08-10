@@ -69,7 +69,7 @@ describe('JobEntity - Integration', () => {
       });
       const skill1 = skillRepository.create({ name: 'TypeScript' });
       const skill2 = skillRepository.create({ name: 'GraphQL' });
-
+      await skillRepository.save([skill1, skill2]);
       const newJobData: Partial<JobEntity> = {
         title: 'Senior Software Engineer',
         provider: { name: 'ProviderX', jobId: 'px-123' },
