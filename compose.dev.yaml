@@ -1,36 +1,31 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker compose reference guide at
-# https://docs.docker.com/compose/compose-file/
-
-# Here the instructions define your application as a service called "server".
-# This service is built from the Dockerfile in the current directory.
-# You can add other services your application may depend on here, such as a
-# database or a cache. For examples, see the Awesome Compose repository:
-# https://github.com/docker/awesome-compose
 services:
   server:
     build:
       context: .
       target: development
-    environment:
-      NODE_ENV: development
+    image: ${COMPOSE_PROJECT_NAME}-dev
     volumes:
-      - type: bind
-        source: .
-        target: /usr/src/app
+      # Mount local source code for hot-reloading
+      - .:/usr/src/app
+      # Anonymize node_modules to use the container's version
+      - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
 
   database:
     ports:
-      - '5432:5432'
-    networks:
-      - default
+      # Expose database port to the host machine for local tools
+      - '${DATABASE_PORT:-5432}:5432'
 
   db-admin:
     image: adminer
+    container_name: ${COMPOSE_PROJECT_NAME}-adminer
     environment:
       ADMINER_DEFAULT_SERVER: database
     ports:
       - '8080:8080'
     networks:
+      - private-net
+      - public-net
+    depends_on:
       - database
-      - default
